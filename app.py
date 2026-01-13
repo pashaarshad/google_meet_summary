@@ -322,16 +322,27 @@ with tab1:
     with col2:
         st.markdown("### 🎙️ Recording Controls")
         
-        # Status indicator
+        # Status indicator with live timer
         if st.session_state.is_recording:
             elapsed = time.time() - st.session_state.recording_start_time if st.session_state.recording_start_time else 0
+            hours = int(elapsed // 3600)
+            minutes = int((elapsed % 3600) // 60)
+            seconds = int(elapsed % 60)
+            duration_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}" if hours > 0 else f"{minutes:02d}:{seconds:02d}"
+            
             st.markdown(f"""
-            <div style="background-color: #ffe8e8 !important; padding: 1.5rem; border-radius: 10px; border-left: 5px solid #e74c3c; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                <span style="display: block; color: #c0392b !important; margin: 0 0 0.5rem 0; font-size: 1.4rem; font-weight: 700;">🔴 Recording in Progress</span>
-                <span style="display: block; color: #2d2d2d !important; margin: 0.3rem 0; font-size: 1.05rem;">Duration: <strong style="color: #c0392b !important;">{format_duration(elapsed)}</strong></span>
-                <span style="display: block; color: #4a4a4a !important; margin: 0.3rem 0; font-size: 0.95rem;">Click "Stop Recording" when your meeting ends</span>
+            <div style="background-color: #ffcdd2 !important; padding: 1.5rem; border-radius: 12px; border-left: 6px solid #e74c3c; margin: 1rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <span style="display: block; color: #b71c1c !important; margin: 0 0 0.5rem 0; font-size: 1.4rem; font-weight: 700;">🔴 Recording in Progress</span>
+                <div style="background-color: #ffffff !important; padding: 0.8rem 1.2rem; border-radius: 8px; display: inline-block; margin: 0.5rem 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                    <span style="color: #c62828 !important; font-size: 2rem; font-weight: bold; font-family: 'Courier New', monospace; letter-spacing: 2px;">⏱️ {duration_str}</span>
+                </div>
+                <span style="display: block; color: #5d4037 !important; margin: 0.5rem 0 0 0; font-size: 0.95rem;">Click "Stop Recording" when your meeting ends</span>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Auto-refresh every 1 second to update timer
+            time.sleep(1)
+            st.rerun()
         else:
             st.markdown("""
             <div style="background-color: #f0f4ff !important; padding: 1.5rem; border-radius: 10px; border-left: 5px solid #667eea; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
@@ -455,9 +466,15 @@ with tab1:
                         mime="text/plain"
                     )
                 with col2:
-                    if st.button("📋 Copy to Clipboard"):
-                        st.code(st.session_state.current_transcript)
-                        st.info("Select and copy the text above")
+                    # JavaScript-based copy to clipboard
+                    transcript_escaped = st.session_state.current_transcript.replace('`', '\\`').replace('$', '\\$').replace('\n', '\\n')
+                    copy_script = f"""
+                    <button onclick="navigator.clipboard.writeText(`{transcript_escaped}`).then(() => alert('✅ Copied to clipboard!')).catch(err => alert('❌ Copy failed: ' + err))" 
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; font-weight: 600; width: 100%;">
+                        📋 Copy to Clipboard
+                    </button>
+                    """
+                    st.markdown(copy_script, unsafe_allow_html=True)
             else:
                 st.info("No transcript available yet. Process a recording first!")
         
@@ -565,7 +582,15 @@ with tab3:
 # =============================================================================
 
 st.divider()
-st.markdown(
-    f"<center><small>{APP_NAME} v{APP_VERSION} • Made with ❤️ and AI</small></center>",
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div style="text-align: center; padding: 1rem 0;">
+    <p style="color: #888; font-size: 0.9rem; margin: 0.3rem 0;">Google Meet Summarizer v1.0.0</p>
+    <p style="color: #888; font-size: 0.85rem; margin: 0.3rem 0;">
+        Created with ❤️ by 
+        <a href="https://arshadpasha.tech" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">Arshad Pasha</a>
+    </p>
+    <p style="color: #666; font-size: 0.8rem; margin: 0.5rem 0;">
+        <a href="https://arshadpasha.tech" target="_blank" style="color: #764ba2; text-decoration: none;">🌐 arshadpasha.tech</a>
+    </p>
+</div>
+""", unsafe_allow_html=True)
