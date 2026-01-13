@@ -1,0 +1,8 @@
+streamlit
+sounddevice
+soundfile
+openai-whisper
+transformers
+torch
+sentencepiece
+accelerate
