@@ -5,10 +5,13 @@ Handles speech-to-text conversion using OpenAI Whisper.
 """
 
 import whisper
+import numpy as np
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional, List
 import json
+import tempfile
+import os
 
 from config import WHISPER_MODEL, TRANSCRIPTS_DIR
 
@@ -42,6 +45,46 @@ class Transcriber:
         print(f"📥 Loading Whisper model: {self.model_name}...")
         self.model = whisper.load_model(self.model_name)
         print(f"✅ Whisper model loaded successfully!")
+    
+    def _load_audio_wav(self, audio_path: str) -> np.ndarray:
+        """
+        Load WAV audio file using scipy (no FFmpeg needed for WAV files).
+        
+        Args:
+            audio_path: Path to WAV file
+            
+        Returns:
+            Audio data as numpy array normalized for Whisper
+        """
+        from scipy.io import wavfile
+        
+        print(f"📂 Loading audio file: {audio_path}")
+        
+        # Read WAV file
+        sample_rate, audio_data = wavfile.read(audio_path)
+        
+        # Convert to float32 and normalize
+        if audio_data.dtype == np.int16:
+            audio_data = audio_data.astype(np.float32) / 32768.0
+        elif audio_data.dtype == np.int32:
+            audio_data = audio_data.astype(np.float32) / 2147483648.0
+        elif audio_data.dtype == np.float32:
+            pass  # Already float32
+        else:
+            audio_data = audio_data.astype(np.float32)
+        
+        # Convert stereo to mono if needed
+        if len(audio_data.shape) > 1:
+            audio_data = audio_data.mean(axis=1)
+        
+        # Resample to 16kHz if needed (Whisper expects 16kHz)
+        if sample_rate != 16000:
+            from scipy import signal
+            num_samples = int(len(audio_data) * 16000 / sample_rate)
+            audio_data = signal.resample(audio_data, num_samples)
+        
+        print(f"✅ Audio loaded: {len(audio_data)/16000:.1f} seconds")
+        return audio_data.astype(np.float32)
         
     def transcribe(
         self, 
@@ -70,7 +113,7 @@ class Transcriber:
             
         print(f"🎯 Transcribing: {audio_path}")
         
-        # Transcribe with Whisper
+        # Prepare options
         options = {
             "task": task,
             "verbose": False
@@ -78,8 +121,19 @@ class Transcriber:
         
         if language:
             options["language"] = language
-            
-        result = self.model.transcribe(audio_path, **options)
+        
+        # Try to load WAV file directly with scipy (no FFmpeg needed)
+        try:
+            if audio_path.lower().endswith('.wav'):
+                audio_data = self._load_audio_wav(audio_path)
+                result = self.model.transcribe(audio_data, **options)
+            else:
+                # For non-WAV files, use Whisper's default loader (needs FFmpeg)
+                result = self.model.transcribe(audio_path, **options)
+        except Exception as e:
+            print(f"⚠️ Error with scipy loader: {e}")
+            print("Trying Whisper's built-in loader...")
+            result = self.model.transcribe(audio_path, **options)
         
         # Process segments for easier access
         segments = []

@@ -1,0 +1,19 @@
+{
+  "text": "data now all health",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 3.7600000000000002,
+      "text": "data now all"
+    },
+    {
+      "id": 1,
+      "start": 3.7600000000000002,
+      "end": 6.82,
+      "text": "health"
+    }
+  ],
+  "language": "en",
+  "duration": 6.82
+}

@@ -66,22 +66,39 @@ st.markdown("""
     
     /* Card styling */
     .status-card {
-        background: #f8f9fa;
+        background: #ffffff;
         padding: 1.5rem;
         border-radius: 10px;
         border-left: 4px solid #667eea;
         margin: 1rem 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .status-card h3 {
+        color: #1a1a2e !important;
+        margin: 0 0 0.5rem 0;
+        font-size: 1.3rem;
+    }
+    
+    .status-card p {
+        color: #333333 !important;
+        margin: 0.3rem 0;
+        font-size: 1rem;
     }
     
     .recording-active {
-        background: #fff3f3;
+        background: #ffe8e8;
         border-left-color: #e74c3c;
         animation: pulse 2s infinite;
     }
     
+    .recording-active h3 {
+        color: #c0392b !important;
+    }
+    
     @keyframes pulse {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
+        50% { opacity: 0.85; }
     }
     
     /* Button styling */
@@ -262,11 +279,20 @@ with st.sidebar:
     # Quick Links
     st.markdown("### 📁 Quick Links")
     if st.button("📂 Open Recordings Folder"):
-        os.startfile(str(RECORDINGS_DIR))
+        try:
+            os.startfile(str(RECORDINGS_DIR))
+        except Exception as e:
+            st.error(f"Could not open folder: {e}")
     if st.button("📂 Open Transcripts Folder"):
-        os.startfile(str(TRANSCRIPTS_DIR))
+        try:
+            os.startfile(str(TRANSCRIPTS_DIR))
+        except Exception as e:
+            st.error(f"Could not open folder: {e}")
     if st.button("📂 Open Summaries Folder"):
-        os.startfile(str(SUMMARIES_DIR))
+        try:
+            os.startfile(str(SUMMARIES_DIR))
+        except Exception as e:
+            st.error(f"Could not open folder: {e}")
 
 
 # =============================================================================
@@ -300,17 +326,17 @@ with tab1:
         if st.session_state.is_recording:
             elapsed = time.time() - st.session_state.recording_start_time if st.session_state.recording_start_time else 0
             st.markdown(f"""
-            <div class="status-card recording-active">
-                <h3>🔴 Recording in Progress</h3>
-                <p>Duration: <strong>{format_duration(elapsed)}</strong></p>
-                <p>Click "Stop Recording" when your meeting ends</p>
+            <div style="background-color: #ffe8e8 !important; padding: 1.5rem; border-radius: 10px; border-left: 5px solid #e74c3c; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                <span style="display: block; color: #c0392b !important; margin: 0 0 0.5rem 0; font-size: 1.4rem; font-weight: 700;">🔴 Recording in Progress</span>
+                <span style="display: block; color: #2d2d2d !important; margin: 0.3rem 0; font-size: 1.05rem;">Duration: <strong style="color: #c0392b !important;">{format_duration(elapsed)}</strong></span>
+                <span style="display: block; color: #4a4a4a !important; margin: 0.3rem 0; font-size: 0.95rem;">Click "Stop Recording" when your meeting ends</span>
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div class="status-card">
-                <h3>⏸️ Ready to Record</h3>
-                <p>Click "Start Recording" when your meeting begins</p>
+            <div style="background-color: #f0f4ff !important; padding: 1.5rem; border-radius: 10px; border-left: 5px solid #667eea; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                <span style="display: block; color: #1a1a2e !important; margin: 0 0 0.5rem 0; font-size: 1.4rem; font-weight: 700;">⏸️ Ready to Record</span>
+                <span style="display: block; color: #2d2d2d !important; margin: 0.3rem 0; font-size: 1.05rem;">Click "Start Recording" when your meeting begins</span>
             </div>
             """, unsafe_allow_html=True)
         

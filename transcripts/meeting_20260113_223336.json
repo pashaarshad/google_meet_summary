@@ -1,0 +1,25 @@
+{
+  "text": "Okay now let me check something which is very much more and very much think we are communicating with the team and we committed a lot a lot. So, can you able to convert it?",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 9.28,
+      "text": "Okay now let me check something which is very much more and very much think we are communicating"
+    },
+    {
+      "id": 1,
+      "start": 9.28,
+      "end": 14.08,
+      "text": "with the team and we committed a lot a lot."
+    },
+    {
+      "id": 2,
+      "start": 14.08,
+      "end": 21.08,
+      "text": "So, can you able to convert it?"
+    }
+  ],
+  "language": "en",
+  "duration": 21.08
+}

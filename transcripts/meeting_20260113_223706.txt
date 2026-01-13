@@ -1,0 +1,6 @@
+Meeting Transcript: meeting_20260113_223706
+Language: en
+Duration: 20.8 seconds
+============================================================
+
+In this the copy to the clipboard is not working and everything is fine. You can make the UI works more colorful and responsive from mobile phone. It will be responsive for the mobile phone.

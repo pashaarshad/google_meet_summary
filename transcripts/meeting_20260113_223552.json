@@ -1,0 +1,31 @@
+{
+  "text": "And a small changes you want to do in this thing, when I start recording, the duration should be visible to us how much visible it is going on and put my name asha, okay, created by asha, asha, something like that, okay. So yeah, and give me the steps how to deploy this, okay.",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 7.5,
+      "text": "And a small changes you want to do in this thing, when I start recording, the duration"
+    },
+    {
+      "id": 1,
+      "start": 7.5,
+      "end": 17.5,
+      "text": "should be visible to us how much visible it is going on and put my name asha, okay,"
+    },
+    {
+      "id": 2,
+      "start": 17.5,
+      "end": 21.7,
+      "text": "created by asha, asha, something like that, okay."
+    },
+    {
+      "id": 3,
+      "start": 21.7,
+      "end": 24.7,
+      "text": "So yeah, and give me the steps how to deploy this, okay."
+    }
+  ],
+  "language": "en",
+  "duration": 24.7
+}
