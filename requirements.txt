@@ -1,8 +1,24 @@
-streamlit
-sounddevice
-soundfile
-openai-whisper
-transformers
-torch
-sentencepiece
-accelerate
+# Google Meet Summarizer - Dependencies
+# =====================================
+
+# Web Framework
+streamlit>=1.28.0
+
+# Audio Recording & Processing
+sounddevice>=0.4.6
+scipy>=1.11.0
+numpy>=1.24.0
+
+# Speech-to-Text (Whisper)
+openai-whisper>=20231117
+
+# AI Summarization (Google Gemini)
+google-generativeai>=0.3.0
+
+# Environment Variables
+python-dotenv>=1.0.0
+
+# PyTorch (Required for Whisper) - CPU version
+# Note: For GPU support, install torch with CUDA manually
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.0.0
